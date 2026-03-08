@@ -1,74 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Moja AI web app</title>
-  <style>
-    body { font-family: Arial; max-width: 700px; margin: 40px auto; }
-    #chat { border: 1px solid #ccc; padding: 10px; min-height: 300px; }
-    .user { color: blue; }
-    .ai { color: green; }
-  </style>
+<meta charset="UTF-8" />
+<title>Alina AI</title>
+
+<style>
+body { font-family: Arial; max-width: 700px; margin: 40px auto; }
+#chat { border: 1px solid #ccc; padding: 10px; min-height: 300px; }
+.user { color: blue; margin: 5px 0; }
+.ai { color: green; margin: 5px 0; }
+</style>
+
 </head>
+
 <body>
-  <h1>Moja AI web app 🚀</h1>
 
-  <div id="chat"></div>
+<h1>Alina AI 🤖</h1>
 
-  <input id="message" placeholder="Napíš správu..." />
-  <button onclick="send()">Poslať</button>
+<div id="chat"></div>
 
-  <script>
-    async function send() {
-      const input = document.getElementById("message");
-      const text = input.value;
+<input id="message" placeholder="Napíš správu..." />
+<button onclick="send()">Poslať</button>
 
-      document.getElementById("chat").innerHTML += `<p class="user"><b>Ty:</b> ${text}</p>`;
+<script>
 
-      const res = await fetch("/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text })
-      });
+async function send() {
 
-      const data = await res.json();
+const input = document.getElementById("message");
+const chat = document.getElementById("chat");
 
-      document.getElementById("chat").innerHTML += `<p class="ai"><b>AI:</b> ${data.reply}</p>`;
-      input.value = "";
-    }
-  </script>
+const text = input.value;
+
+chat.innerHTML += "<div class='user'><b>Ty:</b> " + text + "</div>";
+
+input.value = "";
+
+const response = await fetch("/chat", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({
+message: text
+})
+});
+
+const data = await response.json();
+
+chat.innerHTML += "<div class='ai'><b>Alina:</b> " + data.reply + "</div>";
+
+chat.scrollTop = chat.scrollHeight;
+
+}
+
+</script>
+
 </body>
 </html>
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Moja AI web app</title>
-</head>
-<body>
-  <h1>Moja AI web app 🚀</h1>
-
-  <input id="message" placeholder="Napíš správu..." />
-  <button onclick="send()">Poslať</button>
-
-  <p id="reply"></p>
-
-  <script>
-    async function send() {
-      const message = document.getElementById("message").value;
-
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message })
-      });
-
-      const data = await res.json();
-      document.getElementById("reply").innerText = data.reply;
-    }
-  </script>
-</body>
-</html>
-
