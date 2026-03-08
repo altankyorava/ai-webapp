@@ -1,54 +1,41 @@
 import express from "express";
 import cors from "cors";
-import OpenAI from "openai";
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
-
-let messages = [
-  {
-    role: "system",
-    content: "Voláš sa Alina."
-  }
-];
-
-app.post("/chat", async (req, res) => {
-  try {
-    const userMessage = req.body.message;
-
-    messages.push({
-      role: "user",
-      content: userMessage
-    });
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: messages
-    });
-
-    const reply = completion.choices[0].message.content;
-
-    messages.push({
-      role: "assistant",
-      content: reply
-    });
-
-    res.json({ reply });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Chyba servera" });
-  }
-});
-
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log("Server beží na porte", PORT);
+app.post("/chat", async (req, res) => {
+  const message = req.body.message;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4.1-mini",
+        messages: [
+          { role: "system", content: "You are a helpful AI assistant." },
+          { role: "user", content: message }
+        ]
+      })
+    });
+
+    const data = await response.json();
+    res.json({ reply: data.choices[0].message.content });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "AI error" });
+  }
 });
 
+app.listen(PORT, () => {
+  console.log("Server beží na porte", PORT
