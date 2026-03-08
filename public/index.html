@@ -1,6 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8" />
+  <title>Moja AI web app</title>
+  <style>
+    body { font-family: Arial; max-width: 700px; margin: 40px auto; }
+    #chat { border: 1px solid #ccc; padding: 10px; min-height: 300px; }
+    .user { color: blue; }
+    .ai { color: green; }
+  </style>
+</head>
+<body>
+  <h1>Moja AI web app 🚀</h1>
+
+  <div id="chat"></div>
+
+  <input id="message" placeholder="Napíš správu..." />
+  <button onclick="send()">Poslať</button>
+
+  <script>
+    async function send() {
+      const input = document.getElementById("message");
+      const text = input.value;
+
+      document.getElementById("chat").innerHTML += `<p class="user"><b>Ty:</b> ${text}</p>`;
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+
+      const data = await res.json();
+
+      document.getElementById("chat").innerHTML += `<p class="ai"><b>AI:</b> ${data.reply}</p>`;
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
   <meta charset="UTF-8">
   <title>Moja AI web app</title>
 </head>

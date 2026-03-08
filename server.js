@@ -1,4 +1,60 @@
+let messages = [
+  { role: "system", content: "Si užitočný AI asistent." }
+];
+
+app.post("/chat", async (req, res) => {
+  const userMessage = req.body.message;
+
+  messages.push({ role: "user", content: userMessage });
+
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: messages
+  });
+
+  const reply = completion.choices[0].message.content;
+
+  messages.push({ role: "assistant", content: reply });
+
+  res.json({ reply });
+});
 import express from "express";
+import express from "express";
+import OpenAI from "openai";
+
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+let messages = [
+  { role: "system", content: "Si užitočný AI asistent." }
+];
+
+app.post("/chat", async (req, res) => {
+  const userMessage = req.body.message;
+
+  messages.push({ role: "user", content: userMessage });
+
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: messages
+  });
+
+  const reply = completion.choices[0].message.content;
+
+  messages.push({ role: "assistant", content: reply });
+
+  res.json({ reply });
+});
+
+app.listen(port, () => {
+  console.log("Server running on port 3000");
+});
 import OpenAI from "openai";
 
 const app = express();
